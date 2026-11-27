@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>붕어빵 가게</title>
+<meta property="og:title" content="붕어빵 가게"><meta property="og:description" content="따끈한 붕어빵을 만들어 친구에게 선물해요">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#fff4dc;--card:#fff;--ink:#4a2c14;--sub:#9a7350;--pri:#e8833a;--pri2:#c9611b;--line:#f0dcb8;color-scheme:light}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#241912;--card:#33241a;--ink:#fbe9d0;--sub:#c9a37a;--line:#4d3727;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#241912;--card:#33241a;--ink:#fbe9d0;--sub:#c9a37a;--line:#4d3727;color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Jua','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+#app{max-width:480px;margin:0 auto;padding:14px 16px 28px;position:relative}
+#sd{position:absolute;top:10px;right:12px;border:0;background:var(--card);border-radius:50%;width:38px;height:38px;font-size:1.2rem;z-index:5}
+h1,h2{margin:12px 0 4px}h1{font-size:2rem;text-align:center}
+.sub{color:var(--sub);margin:4px 0 10px}
+canvas{width:100%;height:auto;display:block;border-radius:18px;background:var(--card);touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:14px;font:inherit;font-size:1.1rem;background:var(--pri);color:#fff;box-shadow:0 4px 0 var(--pri2);margin:12px 0 6px;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--pri2)}
+.btn:disabled{opacity:.4}
+.btn.alt{background:var(--card);color:var(--ink);border:2px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;align-items:center}
+.chip{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 14px;font:inherit;font-size:1.05rem}
+.chip.on{border-color:var(--pri);background:var(--pri);color:#fff}
+input{width:100%;box-sizing:border-box;font:inherit;font-size:1.2rem;padding:12px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+#scr{padding-top:50px}
+.steps{display:flex;gap:6px;margin:8px 0 0}.steps i{flex:1;height:6px;border-radius:3px;background:var(--line)}.steps i.on{background:var(--pri)}
+.bar{height:14px;border-radius:7px;background:var(--line);overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;width:0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gc{border:2px solid var(--line);background:var(--card);border-radius:14px;padding:6px;color:var(--ink);font:inherit}.gc canvas{border-radius:10px}
+.row{display:flex;gap:8px}.row .btn{margin-top:0}
+.ctr{text-align:center}
+@keyframes bob{50%{transform:translateY(-6px)}}.bob canvas{animation:bob 2s ease-in-out infinite}
+#toast{position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#333;color:#fff;padding:10px 18px;border-radius:20px;opacity:0;transition:.3s;pointer-events:none;z-index:30}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;z-index:20;color:#fff;text-align:center}
+.ov img{max-width:100%;max-height:68%;border-radius:14px}
+#gb{position:absolute;top:10px;right:58px;border:0;background:var(--card);color:var(--ink);border-radius:19px;height:38px;padding:0 12px;font:inherit;z-index:5}
+#dm{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:15}
+#dw{position:fixed;top:0;right:0;bottom:0;width:min(320px,86vw);background:var(--bg);box-shadow:-6px 0 20px rgba(0,0,0,.3);transform:translateX(105%);transition:transform .25s;z-index:16;box-sizing:border-box;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px));overflow-y:auto}
+#dw.open{transform:none}
+.dh{display:flex;justify-content:space-between;align-items:center;font-size:1.2rem;margin-bottom:10px}
+.dh button{border:0;background:var(--card);color:var(--ink);border-radius:50%;width:34px;height:34px;font:inherit}
+.gi{display:flex;gap:10px;align-items:center;width:100%;text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:6px;font:inherit;margin-bottom:8px}
+.gi canvas{width:96px;height:auto;flex:none;border-radius:8px}
+.gi small{color:var(--sub)}
+.cb{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px;margin-bottom:10px;font-size:.95rem}.cb small{color:var(--sub);display:block;margin:4px 0}
+.r2{display:flex;gap:6px}.r2 input{flex:1;min-width:0;font-size:1rem;padding:8px}.r2 button,#cc{border:0;border-radius:10px;background:var(--pri);color:#fff;font:inherit;padding:6px 10px}
+.ib{background:var(--card);border:2px dashed var(--pri);border-radius:14px;padding:10px;margin:8px 0;font-size:.95rem}.ib .btn{margin:8px 0 0;padding:10px}
+#fd{margin:8px 0}.fi{display:flex;gap:10px;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:6px 10px;margin-bottom:6px}.fi canvas{width:72px;height:auto;flex:none;border-radius:8px}
+</style></head><body>
+<div id="app"><button id="gb" aria-label="받은 선물">🎁 0</button><button id="sd" aria-label="소리">🔊</button><div id="scr"></div></div>
+<div id="dm"></div><aside id="dw"><div class="dh"><b>🎁 받은 붕어빵</b><button id="dx" aria-label="닫기">✕</button></div><div id="cb"></div><div id="dl"></div></aside>
+<div id="toast"></div>
+<script>
+const W=400,H=250,FIL=['팥','슈크림','치즈'],TOP=['🍓','🍒','⭐','💖','🍦','🌸','🍫','🍯'],PEN=[{n:'초코펜',c:'#4a2412'},{n:'딸기펜',c:'#ff4f87'},{n:'민초펜',c:'#46d2a8'}];
+const $=s=>document.querySelector(s),scr=$('#scr');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const ck={get(k){try{const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):''}catch(e){return ''}},set(k,v){try{document.cookie=k+'='+encodeURIComponent(v)+'; max-age=31536000; path=/; SameSite=Lax'}catch(e){}}};
+function loadG(){const m=new Map(),add=g=>{if(g&&/^[0-9a-f]+$/.test(g.h||'')&&!m.has(g.h))m.set(g.h,{h:g.h,t:+g.t||Date.now()})};
+ck.get('bw_g').split('.').filter(Boolean).forEach(s=>{const[h,t]=s.split('-');add({h,t:parseInt(t,36)})});
+store.get('bw_gifts2',[]).forEach(add);store.get('bw_gifts',[]).forEach(h=>add({h,t:Date.now()}));
+return[...m.values()].sort((a,b)=>b.t-a.t)}
+let S={name:store.get('bw_name','')||ck.get('bw_n')},G=loadG(),draw=null,last=0,pouring=false,snd=null,siz=null;
+function saveG(){G=G.slice(0,30);let a=G.map(g=>g.h+'-'+g.t.toString(36));while(a.join('.').length>3500)a.pop();ck.set('bw_g',a.join('.'));store.set('bw_gifts2',G)}
+/* ===== Supabase 설정: 여기에 본인 값을 넣으세요 ===== */
+const SB_URL='https://YOUR-PROJECT-ID.supabase.co',SB_KEY='YOUR-ANON-OR-PUBLISHABLE-KEY';
+const sbOn=()=>!SB_URL.includes('YOUR-');
+async function rpc(fn,args){if(!sbOn())return null;try{const h={'apikey':SB_KEY,'Content-Type':'application/json'};if(SB_KEY.startsWith('eyJ'))h.Authorization='Bearer '+SB_KEY;
+const r=await fetch(`${SB_URL}/rest/v1/rpc/${fn}`,{method:'POST',headers:h,body:JSON.stringify(args||{})});if(!r.ok)return null;const t=await r.text();return t?JSON.parse(t):[]}catch(e){return null}}
+const ABC='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+const newCode=()=>[...crypto.getRandomValues(new Uint8Array(8))].map(v=>ABC[v%31]).join('');
+let IB=store.get('bw_ib','')||ck.get('bw_ib');
+const setIB=c=>{IB=c;store.set('bw_ib',c);ck.set('bw_ib',c)};
+const fmtCode=c=>c.slice(0,4)+'-'+c.slice(4),cleanCode=s=>s.toUpperCase().replace(/[^A-Z0-9]/g,'');
+const mask=n=>{const a=Array.from(n);return a[0]+'*'.repeat(Math.max(1,a.length-1))};
+async function postFeed(d){if(sbOn())await rpc('add_feed',{p_masked:mask(d.name),p_h:enc({...d,name:mask(d.name)})})}
+async function sync(){if(!IB||!sbOn())return;const r=await rpc('get_gifts',{p_inbox:IB});if(!r)return;
+const have=new Set(G.map(g=>g.h));let ch=false;
+r.forEach(x=>{if(/^[0-9a-f]+$/.test(x.h)&&!have.has(x.h)&&dec(x.h)){G.push({h:x.h,t:Date.parse(x.received_at)||Date.now()});ch=true}});
+const srv=new Set(r.map(x=>x.h));for(const g of G.slice(0,30))if(!srv.has(g.h))await rpc('add_gift',{p_inbox:IB,p_h:g.h,p_at:new Date(g.t).toISOString()});
+if(ch){G.sort((a,b)=>b.t-a.t);saveG();renderDrawer()}}
+const UA=navigator.userAgent,IN=/KAKAOTALK|Instagram|FBAN|FBAV|Line\/|NAVER\(inapp|DaumApps|everytimeApp|; wv\)/i.test(UA);
+function openExt(){const u=location.href;if(/KAKAOTALK/i.test(UA))location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(u);
+else if(/Android/i.test(UA)){const x=new URL(u);location.href=`intent://${x.host}${x.pathname}${x.search}#Intent;scheme=${x.protocol.replace(':','')};package=com.android.chrome;end`}
+else toast('\u22ef 메뉴에서 Safari로 열기를 눌러주세요')}
+const inApp=()=>IN?`<div class="ib">📱 앱 안의 브라우저예요. 크롬·사파리에서 열면 선물함을 계속 쓸 수 있어요.<button id="ex" class="btn alt">🌐 브라우저로 열기</button></div>`:'';
+const codeHint=()=>sbOn()&&IB?`<p class="sub ctr">🔑 선물함 코드 <b>${fmtCode(IB)}</b><br>다른 브라우저에서 입력하면 선물함이 이어져요</p>`:'';
+const ago=t=>{const m=Math.floor((Date.now()-Date.parse(t))/6e4);return m<2?'방금':m<60?m+'분 전':m<1440?Math.floor(m/60)+'시간 전':Math.floor(m/1440)+'일 전'};
+async function loadFeed(){if(!$('#fd')||!sbOn())return;const r=await rpc('get_feed');const el=$('#fd');if(!r||!el)return;
+const ok=r.filter(x=>/^[0-9a-f]+$/.test(x.h)&&dec(x.h));
+el.innerHTML=ok.map(x=>`<div class="fi"><canvas width="120" height="75" data-h="${x.h}"></canvas><div>${ago(x.created_at)} <b>${esc(x.masked)}</b>님이 붕어빵을 완성했어요!</div></div>`).join('');
+el.querySelectorAll('canvas').forEach(cv=>{const d=dec(cv.dataset.h),c=cv.getContext('2d');c.scale(.3,.3);paper(c);drawFish(c,d.bake,d.tops)})}
+setInterval(loadFeed,15000);
+/* ---------- sound ---------- */
+let AC,NB,mute=false;
+function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();NB=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate);const d=NB.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}catch(e){}}
+if(AC&&AC.state==='suspended')AC.resume();return AC}
+function tone(f,d=.12,type='sine',v=.15,f2){const a=ac();if(!a||mute)return;const o=a.createOscillator(),g=a.createGain(),t=a.currentTime;o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(a.destination);o.start();o.stop(t+d)}
+function noise(freq,type,v){const a=ac();if(!a||mute)return null;const s=a.createBufferSource();s.buffer=NB;s.loop=true;const f=a.createBiquadFilter();f.type=type;f.frequency.value=freq;const g=a.createGain();g.gain.value=v;s.connect(f).connect(g).connect(a.destination);s.start();return{stop(){try{g.gain.setTargetAtTime(0,a.currentTime,.05);s.stop(a.currentTime+.3)}catch(e){}}}}
+$('#sd').onclick=()=>{ac();mute=!mute;$('#sd').textContent=mute?'🔇':'🔊'};
+const jingle=()=>[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.28,'triangle',.18),i*130));
+const stopPour=()=>{pouring=false;if(snd){snd.stop();snd=null}};
+addEventListener('pointerup',stopPour);addEventListener('pointercancel',stopPour);
+function toast(m){const t=$('#toast');t.textContent=m;t.style.opacity=1;clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.opacity=0,1800)}
+/* ---------- drawing ---------- */
+const FISH=new Path2D();
+FISH.moveTo(60,125);FISH.bezierCurveTo(90,40,230,20,310,90);FISH.lineTo(375,45);FISH.bezierCurveTo(358,90,358,160,375,205);FISH.lineTo(310,160);FISH.bezierCurveTo(230,230,90,210,60,125);FISH.closePath();
+const STOPS=[[0,[247,222,150]],[35,[233,178,80]],[60,[200,120,42]],[80,[122,66,24]],[100,[32,22,16]]];
+function bakeCol(b){let i=1;while(i<STOPS.length-1&&b>STOPS[i][0])i++;const[a,A]=STOPS[i-1],[z,Z]=STOPS[i],k=Math.max(0,Math.min(1,(b-a)/(z-a)));return`rgb(${A.map((v,j)=>Math.round(v+(Z[j]-v)*k)).join(',')})`}
+function rr(c,x,y,w,h,r){c.beginPath();c.roundRect(x,y,w,h,r)}
+function paper(c){c.fillStyle='#fff6e0';rr(c,0,0,W,H,0);c.fill()}
+function drawFish(c,b,tops,o={}){
+c.save();c.translate(W/2,H/2+(o.dy||0));const s=o.sc||1;c.scale(s,s);c.translate(-W/2,-H/2);
+c.shadowColor='rgba(0,0,0,.25)';c.shadowBlur=o.dy?18:8;c.shadowOffsetY=o.dy?14:4;
+c.fillStyle=bakeCol(b);c.fill(FISH);c.shadowColor='transparent';
+c.save();c.clip(FISH);
+const g=c.createRadialGradient(170,90,10,200,125,210);g.addColorStop(0,'rgba(255,255,255,.2)');g.addColorStop(1,'rgba(0,0,0,.22)');c.fillStyle=g;c.fillRect(0,0,W,H);
+c.strokeStyle='rgba(0,0,0,.2)';c.lineWidth=2;
+for(let r=0;r<5;r++)for(let k=0;k<5;k++){c.beginPath();c.arc(150+k*34+(r%2)*17,70+r*26,17,.1*Math.PI,.9*Math.PI);c.stroke()}
+for(let i=0;i<5;i++){c.beginPath();c.moveTo(310,125);c.lineTo(375,55+i*35);c.stroke()}
+c.beginPath();c.arc(118,125,52,-.6*Math.PI,.6*Math.PI);c.stroke();c.restore();
+c.strokeStyle='rgba(0,0,0,.28)';c.lineWidth=3;c.stroke(FISH);
+c.fillStyle='#fff';c.beginPath();c.arc(92,105,11,0,7);c.fill();c.fillStyle='#2b1a0e';c.beginPath();c.arc(93,106,6.5,0,7);c.fill();c.fillStyle='#fff';c.beginPath();c.arc(91,103,2.2,0,7);c.fill();
+c.strokeStyle='rgba(255,255,255,.55)';c.lineWidth=2.5;c.beginPath();c.arc(78,132,9,.15*Math.PI,.85*Math.PI);c.stroke();
+c.font='34px serif';c.textAlign='center';c.textBaseline='middle';
+tops.forEach(q=>{if(Array.isArray(q)){if(TOP[q[0]])c.fillText(TOP[q[0]],q[1]/255*W,q[2]/255*H)}else if(q&&q.pts&&q.pts.length){c.strokeStyle=c.fillStyle=(PEN[q.p]||PEN[0]).c;c.lineWidth=7;c.lineCap=c.lineJoin='round';const P=q.pts.map(([x,y])=>[x/255*W,y/255*H]);
+if(P.length<2){c.beginPath();c.arc(P[0][0],P[0][1],3.5,0,7);c.fill()}else{c.beginPath();c.moveTo(P[0][0],P[0][1]);for(let i=1;i<P.length-1;i++)c.quadraticCurveTo(P[i][0],P[i][1],(P[i][0]+P[i+1][0])/2,(P[i][1]+P[i+1][1])/2);c.lineTo(P[P.length-1][0],P[P.length-1][1]);c.stroke()}}});
+c.restore()}
+function moldBase(c,fill,stream){
+c.clearRect(0,0,W,H);const g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,'#62626a');g.addColorStop(1,'#34343a');
+c.fillStyle=g;rr(c,6,6,W-12,H-12,22);c.fill();c.fillStyle='#1d1d21';c.fill(FISH);
+if(fill>0){const y=215-fill/100*185;c.save();c.clip(FISH);c.fillStyle='#f6e3b4';c.fillRect(0,y,W,H);c.fillStyle='#fff3d6';c.fillRect(0,y,W,4);c.restore();if(stream){c.fillStyle='#f6e3b4';c.fillRect(193,0,14,y)}}}
+function lidDraw(c,L,t,steam){
+if(L>0.01){c.save();c.translate(0,-(1-L)*(H+20));const g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,'#9a9aa6');g.addColorStop(1,'#5e5e6a');c.fillStyle=g;rr(c,6,6,W-12,H-12,22);c.fill();
+c.fillStyle='#3a3a42';rr(c,165,95,70,60,14);c.fill();c.fillStyle='#55555e';rr(c,175,105,50,40,10);c.fill();c.restore()}
+if(steam)for(let i=0;i<6;i++){const p=(t*50+i*43)%140;c.fillStyle=`rgba(255,255,255,${(1-p/140)*.55})`;c.beginPath();c.arc(50+i*60,150-p,12+p/8,0,7);c.fill()}}
+function card(d){const e=document.createElement('canvas');e.width=800;e.height=780;const c=e.getContext('2d');c.scale(2,2);
+const g=c.createLinearGradient(0,0,0,390);g.addColorStop(0,'#ffe3b0');g.addColorStop(1,'#ffc98a');c.fillStyle=g;c.fillRect(0,0,W,390);
+c.save();c.translate(0,20);c.beginPath();c.roundRect(10,0,380,250,20);c.clip();paper(c);drawFish(c,d.bake,d.tops);c.restore();
+c.textAlign='center';c.fillStyle='#7a431a';c.font='30px Jua,sans-serif';c.fillText(`${d.name}님의 붕어빵`,200,322);
+c.font='15px Jua,sans-serif';c.fillStyle='#a86a30';c.fillText('🐟 붕어빵 가게',200,364);return e}
+function thumb(e,d){const c=e.getContext('2d');c.scale(.5,.5);paper(c);drawFish(c,d.bake,d.tops)}
+/* ---------- share / save ---------- */
+const enc=d=>{const a=[d.bake,d.fil|128,d.tops.length];d.tops.forEach(q=>{if(Array.isArray(q))a.push(...q);else{a.push(128|q.p,q.pts.length);q.pts.forEach(p=>a.push(...p))}});return[...a,...new TextEncoder().encode(d.name.slice(0,8))].map(x=>x.toString(16).padStart(2,'0')).join('')};
+function dec(h){try{const b=h.match(/../g).map(x=>parseInt(x,16));if(b.length<3||b[0]>100||(b[1]&127)>2||b[2]>40)return null;const nw=b[1]>127,n=b[2],tops=[];let i=3;
+for(let k=0;k<n;k++){if(nw&&b[i]>127){const m=b[i+1],pts=[];for(let j=0;j<m;j++)pts.push([b[i+2+j*2],b[i+3+j*2]]);tops.push({p:b[i]&127,pts});i+=2+m*2}else{tops.push(b.slice(i,i+3));i+=3}}
+return{bake:b[0],fil:b[1]&127,tops,name:new TextDecoder().decode(new Uint8Array(b.slice(i)))||'친구'}}catch(e){return null}}
+const link=d=>location.href.split('#')[0].split('?')[0]+'?g='+enc(d);
+async function share(d){const url=link(d);try{if(navigator.share){await navigator.share({title:'붕어빵 선물',text:`${d.name}님이 붕어빵을 선물했어요! 🐟`,url});return}}catch(e){if(e.name==='AbortError')return}
+try{await navigator.clipboard.writeText(url);toast('링크가 복사됐어요!')}catch(e){const l=$('#lk');if(l){l.select();toast('링크를 복사해 주세요')}}}
+function save(d){const e=card(d);e.toBlob(async b=>{try{const f=new File([b],'bungeoppang.png',{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}catch(x){if(x.name==='AbortError')return}
+const u=e.toDataURL('image/png'),o=document.createElement('div');o.className='ov';o.innerHTML=`<img src="${u}" alt="붕어빵"><div>이미지를 길게 눌러 저장하세요 📷</div><a class="btn" style="width:auto;text-decoration:none" download="bungeoppang.png" href="${u}">다운로드</a><button class="btn alt" style="width:auto">닫기</button>`;
+o.querySelector('button').onclick=()=>o.remove();document.body.appendChild(o)},'image/png')}
+/* ---------- views ---------- */
+function view(h){stopPour();if(siz){siz.stop();siz=null}draw=null;scr.innerHTML=h;scrollTo(0,0)}
+function cvs(){const e=$('#cv');e.width=800;e.height=500;const c=e.getContext('2d');c.scale(2,2);return c}
+const steps=n=>`<div class="steps">${[1,2,3,4,5].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')}</div>`;
+function goHome(){try{history.replaceState(null,'',location.pathname)}catch(e){if(location.hash)location.hash=''}home()}
+function home(){
+view(`<h1>🐟 붕어빵 가게</h1><p class="sub ctr">따끈한 붕어빵을 만들어 친구에게 선물해요</p>${inApp()}<div id="fd"></div><canvas id="cv"></canvas>
+<button id="mk" class="btn">🔥 붕어빵 만들러 가기</button>
+<p class="sub">${S.name?`이름: <b>${esc(S.name)}</b> <a href="#" id="cn" style="color:var(--pri)">바꾸기</a>`:''}</p>
+<button id="og" class="btn alt">🎁 선물 받은 붕어빵 보기 (${G.length})</button>`);
+const c=cvs();draw=(dt,t)=>{c.clearRect(0,0,W,H);paper(c);drawFish(c,34,[[2,150,95]],{dy:Math.sin(t*2)*4})};
+$('#mk').onclick=()=>{ac();tone(500,.1,'triangle');S.name?newGame():nameScr(newGame)};
+const cn=$('#cn');if(cn)cn.onclick=e=>{e.preventDefault();nameScr(goHome)};
+$('#og').onclick=()=>drawer(true);const ex=$('#ex');if(ex)ex.onclick=openExt;loadFeed();sync()}
+function nameScr(next){
+view(`<h2>이름을 알려주세요</h2><p class="sub">선물할 때 이름이 함께 전달돼요</p><input id="nm" maxlength="8" placeholder="이름 (최대 8자)" value="${esc(S.name||'')}"><button id="ok" class="btn">확인</button><button id="bk" class="btn alt">뒤로</button>`);
+const go=()=>{const v=$('#nm').value.trim();if(!v)return toast('이름을 입력해 주세요');S.name=v;store.set('bw_name',v);ck.set('bw_n',v);tone(660,.1,'triangle');next()};
+$('#ok').onclick=go;$('#nm').onkeydown=e=>{if(e.key==='Enter')go()};$('#bk').onclick=goHome}
+function newGame(){S={name:S.name,fill:0,fil:0,bake:0,tops:[],tp:0,lid:0};pourScr()}
+function pourScr(){
+view(`${steps(1)}<h2>반죽을 틀에 부어요</h2><p class="sub">버튼을 꾹 누르고 있으면 반죽이 나와요</p><canvas id="cv"></canvas>
+<div class="chips"><span>속재료</span><span id="fl">${FIL.map((f,i)=>`<button class="chip ${i==S.fil?'on':''}" data-f="${i}">${f}</button>`).join(' ')}</span></div>
+<button id="pb" class="btn">🥣 꾹 눌러서 붓기</button><button id="nx" class="btn alt" disabled>다음 →</button>`);
+const c=cvs(),pb=$('#pb'),nx=$('#nx');
+$('#fl').onclick=ev=>{const b=ev.target.closest('[data-f]');if(!b)return;S.fil=+b.dataset.f;[...$('#fl').children].forEach(x=>x.classList.toggle('on',x===b));tone(600,.08,'triangle')};
+pb.oncontextmenu=e=>e.preventDefault();
+pb.onpointerdown=()=>{if(S.fill<100&&!pouring){ac();pouring=true;snd=noise(700,'lowpass',.35)}};
+nx.onclick=()=>{stopPour();tone(520,.1,'triangle');bakeScr()};
+draw=dt=>{if(pouring){S.fill=Math.min(100,S.fill+32*dt);if(S.fill>=100){stopPour();tone(880,.15,'sine',.15)}}moldBase(c,S.fill,pouring);nx.disabled=S.fill<60}}
+function bakeScr(){
+S.phase=0;S.bake=0;S.lid=0;
+view(`${steps(2)}<h2>덮고 기다려요</h2><p class="sub" id="ht">틀을 덮고 원하는 색이 될 때까지 기다려요</p><canvas id="cv"></canvas><div class="bar"><i id="mt"></i></div>
+<button id="bb" class="btn">🔥 틀 덮기</button>`);
+const c=cvs(),bb=$('#bb'),ht=$('#ht'),mt=$('#mt');
+bb.onclick=()=>{ac();if(S.phase==0){S.phase=1;tone(300,.2,'square',.1,150);siz=noise(3500,'highpass',.09);bb.textContent='👀 열기!'}else{S.phase=2;if(siz){siz.stop();siz=null}takeScr()}};
+draw=(dt,t)=>{const tg=S.phase==1?1:0;S.lid+=Math.sign(tg-S.lid)*Math.min(Math.abs(tg-S.lid),3*dt);
+if(S.phase==1)S.bake=Math.min(100,S.bake+7*dt);const b=S.bake;
+moldBase(c,S.fill,false);lidDraw(c,S.lid,t,S.phase==1);
+mt.style.width=b+'%';mt.style.background=bakeCol(b);
+if(S.phase==1)ht.textContent=b<15?'아직 하얀 반죽이에요…':b<35?'노릇노릇해지는 중 🙂':b<55?'고소한 냄새가 나요 🥰':b<75?'갈색이 진해져요 😋':b<92?'앗, 타기 시작해요! 😨':'🔥 새까맣게 탔어요!'}}
+function takeScr(){
+S.lid=1;S.lift=-1;tone(350,.15,'sine',.2,900);
+view(`${steps(3)}<h2>틀을 열고 꺼내요</h2><p class="sub">붕어빵을 톡 눌러 꺼내세요</p><canvas id="cv"></canvas><button id="tk" class="btn">🥢 꺼내기</button>`);
+const c=cvs(),go=()=>{if(S.lift<0){S.lift=0;ac();tone(700,.12,'triangle',.2,300)}};
+$('#tk').onclick=go;$('#cv').onclick=go;
+draw=(dt,t)=>{S.lid=Math.max(0,S.lid-3*dt);if(S.lift>=0)S.lift=Math.min(1,S.lift+2*dt);
+moldBase(c,0,false);drawFish(c,S.bake,[],{dy:-Math.max(0,S.lift)*40,sc:1+Math.max(0,S.lift)*.1});lidDraw(c,S.lid,t,S.lid>.05);
+if(S.lift>=1)decoScr()}}
+function decoScr(){
+view(`${steps(4)}<h2>토핑으로 꾸며요</h2><p class="sub">토핑은 톡톡 누르고, 펜은 쓱쓱 그려요</p><canvas id="cv"></canvas>
+<div class="chips" id="tp">${TOP.map((t,i)=>`<button class="chip ${i==S.tp?'on':''}" data-t="${i}">${t}</button>`).join('')}${PEN.map((p,i)=>`<button class="chip ${i+TOP.length==S.tp?'on':''}" data-t="${i+TOP.length}"><span style="color:${p.c}">●</span> ${p.n}</button>`).join('')}</div>
+<div class="row"><button id="un" class="btn alt">↩ 되돌리기</button><button id="cl" class="btn alt">🗑 지우기</button></div><button id="dn" class="btn">완성! 🎉</button>`);
+const c=cvs(),e=$('#cv');
+$('#tp').onclick=ev=>{const b=ev.target.closest('[data-t]');if(!b)return;S.tp=+b.dataset.t;[...$('#tp').children].forEach(x=>x.classList.toggle('on',x===b));tone(600,.08,'triangle')};
+e.style.touchAction='none';let cur=null;
+const pt=ev=>{const r=e.getBoundingClientRect();return[Math.round(Math.max(0,Math.min(255,(ev.clientX-r.left)/r.width*255))),Math.round(Math.max(0,Math.min(255,(ev.clientY-r.top)/r.height*255)))]};
+const cnt=()=>S.tops.reduce((n,x)=>n+(Array.isArray(x)?0:x.pts.length),0);
+e.onpointerdown=ev=>{ac();const p=pt(ev);if(S.tops.length>=30)return toast('더 꾸밀 수 없어요');
+if(S.tp<TOP.length){if(S.tops.filter(Array.isArray).length>=14)return toast('토핑은 14개까지예요');S.tops.push([S.tp,p[0],p[1]]);tone(300,.1,'sine',.2,700)}
+else{if(cnt()>=110)return toast('펜은 여기까지예요');cur={p:S.tp-TOP.length,pts:[p]};S.tops.push(cur);try{e.setPointerCapture(ev.pointerId)}catch(x){}tone(700,.06,'triangle',.08)}};
+e.onpointermove=ev=>{if(!cur)return;const p=pt(ev),l=cur.pts[cur.pts.length-1];if(Math.hypot(p[0]-l[0],p[1]-l[1])>=7&&cur.pts.length<40&&cnt()<110){cur.pts.push(p);tone(900+Math.random()*300,.04,'triangle',.04)}};
+e.onpointerup=e.onpointercancel=()=>{cur=null};
+$('#un').onclick=()=>{S.tops.pop();tone(250,.08)};$('#cl').onclick=()=>{S.tops=[];tone(200,.12)};
+$('#dn').onclick=doneScr;
+draw=()=>{c.clearRect(0,0,W,H);paper(c);drawFish(c,S.bake,S.tops)}}
+function doneScr(){
+const d={name:S.name,bake:Math.round(S.bake),fil:S.fil,tops:S.tops};jingle();postFeed(d);
+view(`${steps(5)}<h2 class="ctr">완성! 🎉</h2><div class="bob"><canvas id="cv"></canvas></div><p class="sub ctr">${esc(d.name)}님의 ${FIL[d.fil]}붕어빵</p>
+<button id="sh" class="btn">🎁 친구에게 선물하기 (링크 공유)</button><button id="sv" class="btn alt">📷 사진으로 저장</button>
+<input id="lk" readonly value="${esc(link(d))}"><button id="ag" class="btn alt">🔄 또 만들기</button><button id="hm" class="btn alt">🏠 메인으로</button>`);
+const c=cvs();paper(c);drawFish(c,d.bake,d.tops);
+$('#sh').onclick=()=>share(d);$('#sv').onclick=()=>save(d);$('#lk').onclick=e=>e.target.select();$('#ag').onclick=newGame;$('#hm').onclick=goHome}
+function gift(d,h,fromList){
+if(!fromList&&!G.some(g=>g.h===h)){G.unshift({h,t:Date.now()});saveG();if(sbOn()){if(!IB)setIB(newCode());rpc('add_gift',{p_inbox:IB,p_h:h,p_at:new Date().toISOString()})}renderDrawer()}
+view(`<h2 class="ctr">🎁 <b>${esc(d.name)}</b>님이 붕어빵을 선물했어요!</h2><div class="bob"><canvas id="cv"></canvas></div><p class="sub ctr">${FIL[d.fil]}붕어빵${fromList?'':' · 선물함에 저장됐어요'}</p>${codeHint()}${inApp()}
+<button id="mk" class="btn">🐟 나도 붕어빵 만들기</button><button id="sv" class="btn alt">📷 사진으로 저장</button><button id="hm" class="btn alt">🏠 메인으로</button>`);
+const c=cvs();paper(c);drawFish(c,d.bake,d.tops);
+$('#mk').onclick=()=>{try{history.replaceState(null,'',location.pathname)}catch(e){}ac();S.name?newGame():nameScr(newGame)};$('#sv').onclick=()=>save(d);$('#hm').onclick=goHome;const ex=$('#ex');if(ex)ex.onclick=openExt}
+const fmt=t=>{const d=new Date(t);return `${d.getFullYear()}.${d.getMonth()+1}.${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`};
+function drawer(o){$('#dw').classList.toggle('open',o);$('#dm').style.display=o?'block':'none';if(o){renderDrawer();sync()}}
+function renderDrawer(){$('#gb').textContent='🎁 '+G.length;renderCb();const l=$('#dl');
+l.innerHTML=G.length?G.map((g,i)=>{const d=dec(g.h);return d?`<button class="gi" data-i="${i}"><canvas width="200" height="125"></canvas><div><b>${esc(d.name)}</b>님이 보냄<br><small>${fmt(g.t)}<br>${FIL[d.fil]}붕어빵</small></div></button>`:''}).join(''):'<p class="sub">아직 받은 붕어빵이 없어요.<br>친구가 보낸 링크를 열면 여기에 쌓여요!</p>';
+l.querySelectorAll('.gi').forEach(b=>{const g=G[+b.dataset.i];thumb(b.querySelector('canvas'),dec(g.h));b.onclick=()=>{drawer(false);gift(dec(g.h),g.h,true)}})}
+$('#gb').onclick=()=>drawer(true);$('#dx').onclick=$('#dm').onclick=()=>drawer(false);renderDrawer();
+function renderCb(){const b=$('#cb');if(!sbOn()){b.innerHTML='';return}
+b.innerHTML=`<div class="cb"><div>🔑 선물함 코드 <b>${IB?fmtCode(IB):'선물을 받으면 생겨요'}</b> ${IB?'<button id="cc">복사</button>':''}</div><small>다른 브라우저에서 이 코드를 입력하면 선물함이 이어져요</small><div class="r2"><input id="ci" placeholder="코드로 불러오기" maxlength="9"><button id="cg">불러오기</button></div></div>`;
+const cc=$('#cc');if(cc)cc.onclick=async()=>{try{await navigator.clipboard.writeText(IB);toast('코드가 복사됐어요')}catch(e){toast('코드를 직접 적어주세요')}};
+$('#cg').onclick=async()=>{const c=cleanCode($('#ci').value);if(c.length!==8)return toast('코드는 8자리예요');const r=await rpc('get_gifts',{p_inbox:c});
+if(!r||!r.length)return toast('이 코드의 선물이 없어요');setIB(c);await sync();toast(`선물 ${r.length}개를 불러왔어요`);renderDrawer()}}
+function route(){const q=new URLSearchParams(location.search).get('g'),m=location.hash.match(/^#g([0-9a-f]+)$/),h=q||(m&&m[1]),d=h&&/^[0-9a-f]+$/.test(h)&&dec(h);d?gift(d,h):home()}
+function loop(t){const dt=Math.min(.05,(t-last)/1000);last=t;if(draw)draw(dt,t/1000);requestAnimationFrame(loop)}
+addEventListener('hashchange',route);route();requestAnimationFrame(loop);
+</script></body></html>
