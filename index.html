@@ -65,7 +65,52 @@ let S={name:store.get('bw_name','')||ck.get('bw_n')},G=loadG(),draw=null,last=0,
 function saveG(){G=G.slice(0,30);let a=G.map(g=>g.h+'-'+g.t.toString(36));while(a.join('.').length>3500)a.pop();ck.set('bw_g',a.join('.'));store.set('bw_gifts2',G)}
 const SB_URL='https://vwhghhpctasodlwosoym.supabase.co',SB_KEY='sb_publishable_ht59syogAj9tr0U7ioJuKQ_6fOI4tZw';
 const sbOn=()=>!SB_URL.includes('YOUR-');
-async function rpc(fn,args){if(!sbOn())return null;try{const h={'apikey':SB_KEY,'Content-Type':'application/json'};if(SB_KEY.startsWith('eyJ'))h.Authorization='Bearer '+SB_KEY;
+
+async function rpc(fn, args) {
+  if (!sbOn()) return null;
+
+  try {
+    const h = {
+      apikey: SB_KEY,
+      'Content-Type': 'application/json'
+    };
+
+    if (SB_KEY.startsWith('eyJ')) {
+      h.Authorization = 'Bearer ' + SB_KEY;
+    }
+
+    const r = await fetch(
+      `${SB_URL}/rest/v1/rpc/${fn}`,
+      {
+        method: 'POST',
+        headers: h,
+        body: JSON.stringify(args || {})
+      }
+    );
+
+    const t = await r.text();
+
+    if (!r.ok) {
+      console.error('Supabase 상세 오류:', {
+        function: fn,
+        status: r.status,
+        response: t,
+        sentData: args
+      });
+
+      toast('서버 오류 ' + r.status);
+      return null;
+    }
+
+    return t ? JSON.parse(t) : [];
+
+  } catch (e) {
+    console.error('RPC 연결 오류:', e);
+    toast('연결 실패: ' + e.message);
+    return null;
+  }
+}
+
 const r=await fetch(`${SB_URL}/rest/v1/rpc/${fn}`,{method:'POST',headers:h,body:JSON.stringify(args||{})});if(!r.ok){toast('서버 오류 '+r.status);return null}const t=await r.text();return t?JSON.parse(t):[]}catch(e){toast('연결 실패');return null}}
 const ABC='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const newCode=()=>[...crypto.getRandomValues(new Uint8Array(8))].map(v=>ABC[v%31]).join('');
