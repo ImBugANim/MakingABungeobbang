@@ -139,9 +139,64 @@ const g=c.createLinearGradient(0,0,0,315);g.addColorStop(0,'#ffe3b0');g.addColor
 c.save();c.translate(140,16);c.scale(.8,.8);c.beginPath();c.roundRect(10,0,380,250,20);c.clip();paper(c);drawFish(c,d.bake,d.tops);c.restore();
 c.textAlign='center';c.fillStyle='#7a431a';c.font='26px Jua,sans-serif';c.fillText(`${d.name}님이 붕어빵을 선물했어요!`,300,268);
 c.font='15px Jua,sans-serif';c.fillStyle='#a86a30';c.fillText('🐟 붕어빵 가게',300,297);return e}
-async function upImg(d){if(!sbOn())return;try{await document.fonts.load('26px Jua').catch(()=>{});const id=await oid(enc(d)),e=ogCard(d);
-const b=await new Promise(r=>e.toBlob(r,'image/jpeg',.85));const h={apikey:SB_KEY,'Content-Type':'image/jpeg'};if(SB_KEY.startsWith('eyJ'))h.Authorization='Bearer '+SB_KEY;
-await fetch(`${SB_URL}/storage/v1/object/og/${id}.jpg`,{method:'POST',headers:h,body:b})}catch(x){}}
+async function upImg(d) {
+    if (!sbOn()) return;
+
+    try {
+        await document.fonts.load('26px Jua').catch(() => {});
+
+        const id = await oid(enc(d));
+        const e = ogCard(d);
+
+        const b = await new Promise(resolve => {
+            e.toBlob(resolve, 'image/jpeg', 0.85);
+        });
+
+        if (!b) {
+            console.error('이미지 생성 실패: Blob이 null입니다.');
+            return;
+        }
+
+        console.log('업로드 파일명:', `${id}.jpg`);
+        console.log('이미지 크기:', b.size);
+
+        const h = {
+            apikey: SB_KEY,
+            'Content-Type': 'image/jpeg'
+        };
+
+        if (SB_KEY.startsWith('eyJ')) {
+            h.Authorization = 'Bearer ' + SB_KEY;
+        }
+
+        const r = await fetch(
+            `${SB_URL}/storage/v1/object/og/${id}.jpg`,
+            {
+                method: 'POST',
+                headers: h,
+                body: b
+            }
+        );
+
+        const response = await r.text();
+
+        if (!r.ok) {
+            console.error('Storage 업로드 상세 오류:', {
+                status: r.status,
+                response: response,
+                filename: `${id}.jpg`
+            });
+
+            toast('이미지 업로드 오류 ' + r.status);
+            return;
+        }
+
+        console.log('이미지 업로드 성공:', response);
+
+    } catch (x) {
+        console.error('이미지 업로드 예외:', x);
+    }
+}
 /* ---------- sound ---------- */
 let AC,NB,mute=false;
 function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();NB=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate);const d=NB.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}catch(e){}}
