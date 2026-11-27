@@ -110,9 +110,6 @@ async function rpc(fn, args) {
     return null;
   }
 }
-
-const r=await fetch(`${SB_URL}/rest/v1/rpc/${fn}`,{method:'POST',headers:h,body:JSON.stringify(args||{})});if(!r.ok){toast('서버 오류 '+r.status);return null}const t=await r.text();return t?JSON.parse(t):[]}catch(e){toast('연결 실패');return null}}
-const ABC='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const newCode=()=>[...crypto.getRandomValues(new Uint8Array(8))].map(v=>ABC[v%31]).join('');
 let IB=store.get('bw_ib','')||ck.get('bw_ib');
 const setIB=c=>{IB=c;store.set('bw_ib',c);ck.set('bw_ib',c)};
