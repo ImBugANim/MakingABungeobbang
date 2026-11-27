@@ -63,7 +63,7 @@ store.get('bw_gifts2',[]).forEach(add);store.get('bw_gifts',[]).forEach(h=>add({
 return[...m.values()].sort((a,b)=>b.t-a.t)}
 let S={name:store.get('bw_name','')||ck.get('bw_n')},G=loadG(),draw=null,last=0,pouring=false,snd=null,siz=null;
 function saveG(){G=G.slice(0,30);let a=G.map(g=>g.h+'-'+g.t.toString(36));while(a.join('.').length>3500)a.pop();ck.set('bw_g',a.join('.'));store.set('bw_gifts2',G)}
-const SB_URL='https://vwhghhpctasodlwosoym.supabase.co','sb_publishable_ht59syogAj9tr0U7ioJuKQ_6fOI4tZw';
+const SB_URL='https://vwhghhpctasodlwosoym.supabase.co',SB_KEY='sb_publishable_ht59syogAj9tr0U7ioJuKQ_6fOI4tZw';
 const sbOn=()=>!SB_URL.includes('YOUR-');
 async function rpc(fn,args){if(!sbOn())return null;try{const h={'apikey':SB_KEY,'Content-Type':'application/json'};if(SB_KEY.startsWith('eyJ'))h.Authorization='Bearer '+SB_KEY;
 const r=await fetch(`${SB_URL}/rest/v1/rpc/${fn}`,{method:'POST',headers:h,body:JSON.stringify(args||{})});if(!r.ok)return null;const t=await r.text();return t?JSON.parse(t):[]}catch(e){return null}}
